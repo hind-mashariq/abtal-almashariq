@@ -404,28 +404,32 @@ async function classesScreen(r){
       ${r.classes.length?`<div class="clslist">${r.classes.map(c=>`<button class="cls" data-id="${esc(c.id)}"><b>${esc(c.className||c.name)}</b>🧒 ${c.count} طالب/ة</button>`).join('')}</div>`
         :`<div class="empty"><div class="big">🏫</div>لا توجد صفوف مرتبطة برمزك بعد — تواصلي مع إدارة المدرسة</div>`}
     </div>
-    ${r.manager?`<div class="card gold" style="margin-top:18px"><div class="row"><span style="font-size:46px">👑</span><div class="grow"><h3 style="margin:0;color:var(--maroon)">إدارة المعلمات</h3><div class="muted">فعّلي المعلمة برمزها فتدخل فورًا، أو احجبيها متى شئتِ</div></div><button class="btn gold" onclick="SFX.click();mgrPanel()">⚙️ إدارة</button></div></div>`:''}
+    ${r.manager?`<div class="card gold" style="margin-top:18px"><div class="row"><span style="font-size:46px">👑</span><div class="grow"><h3 style="margin:0;color:var(--maroon)">إدارة المعلمات</h3><div class="muted">كل المعلمات يدخلن برموزهن — يمكنك حجب أي معلمة أو إلغاء حجبها</div></div><button class="btn gold" onclick="SFX.click();mgrPanel()">⚙️ إدارة</button></div></div>`:''}
     </div>`;
   $app.querySelectorAll('.cls').forEach(b=>b.onclick=async()=>{SFX.click();loading();
     try{const o=await api('tOpen',{code:TC,classId:b.dataset.id});enterClass(o.view)}catch(x){toast(x.message);classesScreen()}});
 }
 async function mgrPanel(){
-  let list=[];
-  const draw=o=>{o.querySelector('#ml').innerHTML=list.map(t=>`<div class="sitem"><span class="e" style="font-size:24px">${subjIcon(t.subjects)}</span><span class="grow"><b>أ. ${esc(t.name)}</b><br><small class="muted">${esc(t.subjects||'')}</small></span>${t.me?'<span class="muted">👑 أنتِ</span>':`<button class="btn ghost sm" data-del="${esc(t.id)}">🚫 حجب</button>`}</div>`).join('');
-    o.querySelector('#mn').textContent=list.length;
+  let list=[],q='',flt='all';
+  const draw=o=>{const bl=list.filter(t=>!t.on).length;
+    o.querySelector('#mn').textContent=`${list.length} معلمة · 🚫 ${bl} محجوبة`;
+    const rows=list.filter(t=>(flt==='all'||(flt==='off'?!t.on:t.on))&&(!q||t.name.includes(q)));
+    o.querySelector('#ml').innerHTML=rows.map(t=>`<div class="sitem" style="${t.on?'':'background:#fff0f0;border-color:#f0b4b4'}"><span class="e" style="font-size:24px">${subjIcon(t.subjects)}</span><span class="grow"><b>أ. ${esc(t.name)}</b><br><small class="muted">${esc(t.subjects||'')} · ${t.on?'<span style="color:var(--green)">✅ تستطيع الدخول</span>':'<span style="color:var(--red)">🚫 محجوبة</span>'}</small></span>${t.me?'<span class="muted">👑 أنتِ</span>':t.on?`<button class="btn ghost sm" data-del="${esc(t.id)}">🚫 حجب</button>`:`<button class="btn green sm" data-on="${esc(t.id)}">✅ إلغاء الحجب</button>`}</div>`).join('')||'<div class="center muted">لا نتائج</div>';
     o.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{const t=list.find(x=>x.id===b.dataset.del);
       if(!b.dataset.sure){b.dataset.sure=1;b.textContent='⚠️ تأكيد الحجب؟';b.style.color='var(--red)';return}
-      api('mDel',{code:TC,tid:t.id}).then(r=>{list=r.list;draw(o);toast('تم حجب أ. '+t.name)}).catch(x=>toast(x.message))})};
-  modal(`<h3>👑 المعلمات المفعّلات (<span id="mn">…</span>)</h3>
-    <div class="row"><input class="inp grow" id="mc" inputmode="numeric" placeholder="اكتبي رمز المعلمة لتفعيلها"><button class="btn sm" id="ma">➕ تفعيل</button></div>
-    <div style="max-height:50vh;overflow:auto;margin-top:12px" id="ml"><div class="center muted">جارٍ التحميل…</div></div>
+      api('mDel',{code:TC,tid:t.id}).then(r=>{list=r.list;draw(o);toast('🚫 تم حجب أ. '+t.name)}).catch(x=>toast(x.message))});
+    o.querySelectorAll('[data-on]').forEach(b=>b.onclick=()=>{const t=list.find(x=>x.id===b.dataset.on);
+      api('mOn',{code:TC,tid:t.id}).then(r=>{list=r.list;draw(o);SFX.win();toast('✅ أ. '+t.name+' تستطيع الدخول الآن')}).catch(x=>toast(x.message))})};
+  modal(`<h3>👑 إدارة دخول المعلمات</h3><p class="muted" style="margin-top:-6px">كل المعلمات يدخلن برموزهن. احجبي من لا ترغب بالاستخدام، ويمكنك إلغاء الحجب متى شئتِ (تبقى بياناتها محفوظة).</p>
+    <div class="row"><input class="inp grow" id="mq" placeholder="🔍 ابحثي عن معلمة"><select class="inp" id="mf" style="max-width:170px"><option value="all">الكل</option><option value="on">المسموح لهن</option><option value="off">المحجوبات</option></select></div>
+    <div class="muted" id="mn" style="margin-top:8px">…</div>
+    <div style="max-height:50vh;overflow:auto;margin-top:8px" id="ml"><div class="center muted">جارٍ التحميل…</div></div>
     <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn ghost sm" data-x>إغلاق</button></div>`,
   (o,close)=>{
     o.querySelector('[data-x]').onclick=close;
+    o.querySelector('#mq').oninput=e=>{q=e.target.value.trim();draw(o)};
+    o.querySelector('#mf').onchange=e=>{flt=e.target.value;draw(o)};
     api('mList',{code:TC}).then(r=>{list=r.list;draw(o)}).catch(x=>toast(x.message));
-    const add=()=>{const c=o.querySelector('#mc').value.trim();if(!c)return o.querySelector('#mc').focus();
-      api('mAdd',{code:TC,tcode:c}).then(r=>{list=r.list;draw(o);o.querySelector('#mc').value='';SFX.win();toast('✅ تم تفعيل أ. '+r.added)}).catch(x=>{SFX.err();toast(x.message)})};
-    o.querySelector('#ma').onclick=add;o.querySelector('#mc').onkeydown=e=>{if(e.key==='Enter')add()};
   });
 }
 function enterClass(view){T=view;if(!TABS.some(t=>t[0]===tTab))tTab='board';store.set('abt_class',T.classId);tTab='board';renderT();startPoll()}
