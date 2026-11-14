@@ -48,10 +48,11 @@ input,textarea,select{font-family:inherit;font-size:18px}
 
 /* الرئيسية التفاعلية */
 .hero{border-radius:28px;overflow:hidden;box-shadow:var(--shadow);border:4px solid var(--gold);background:#fff;position:relative;line-height:0}
-.hero img{display:block;width:100%;height:auto;aspect-ratio:1672/690;object-fit:cover;object-position:top}
-.htitle{position:absolute;left:44%;top:8%;width:55%;height:38%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(ellipse closest-side,rgba(244,243,240,1) 76%,rgba(244,243,240,.9) 88%,rgba(244,243,240,0) 100%)}
+.hero img{display:block;width:100%;height:auto;aspect-ratio:1672/555;object-fit:cover;object-position:top}
+.htitle{position:absolute;left:44%;top:10%;width:55%;height:47%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(ellipse closest-side,rgba(244,243,240,1) 76%,rgba(244,243,240,.9) 88%,rgba(244,243,240,0) 100%)}
 .htitle b{font-family:'El Messiri','Tajawal',sans-serif;font-weight:700;color:#0a4a30;font-size:clamp(20px,4.6vw,58px);line-height:1.15;text-shadow:0 2px 0 rgba(255,255,255,.6)}
 .htitle i{display:block;width:60%;height:4px;margin-top:6px;border-radius:4px;background:linear-gradient(90deg,transparent,#d6a54a,transparent)}
+.pfix{position:absolute;display:block;background-image:var(--hero);background-repeat:no-repeat;-webkit-mask-image:radial-gradient(ellipse closest-side,#000 72%,transparent 100%);mask-image:radial-gradient(ellipse closest-side,#000 72%,transparent 100%);pointer-events:none}
 .hot{position:absolute;border-radius:22px;background:transparent;cursor:pointer;transition:background .2s, box-shadow .2s}
 .hot:hover{background:rgba(255,255,255,.18);box-shadow:0 0 0 4px rgba(214,165,74,.8)}
 .hot.pulse{animation:hotp 2s infinite}
@@ -75,6 +76,30 @@ input,textarea,select{font-family:inherit;font-size:18px}
 .qopt{display:block;width:100%;text-align:right;background:#fff;border:2px solid #e7d6a6;border-radius:14px;padding:12px 14px;margin:8px 0;font-size:18px;font-weight:700;color:var(--ink)}
 .qopt.ok{background:#e5f6ea;border-color:#2e9b55}.qopt.no{background:#fde8ea;border-color:#e2566a}
 
+/* الشعار والإعداد */
+.logo{flex:none;width:118px;aspect-ratio:590/650;border-radius:22px;background:#fff url("%D8%B4%D8%B9%D8%A7%D8%B1.jpeg") center/100% auto no-repeat;box-shadow:0 6px 18px rgba(0,0,0,.25);border:3px solid var(--gold2)}
+.credit{display:inline-flex;align-items:center;gap:8px;margin-top:10px;background:rgba(255,255,255,.12);border:1.5px solid rgba(243,213,140,.6);border-radius:30px;padding:6px 16px;font-size:clamp(13px,1.6vw,16px);font-weight:700;color:#fff}
+.credit b{color:var(--gold2)}
+/* لوحة الشرف */
+.honor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.hcard{background:linear-gradient(180deg,#fffaf0,#fff3d6);border:3px solid var(--gold);border-radius:24px;padding:16px;box-shadow:0 0 0 5px #fff8e6 inset,var(--shadow);position:relative;overflow:hidden}
+.hcard:before{content:'';position:absolute;inset:-40% -10% auto;height:80%;background:radial-gradient(circle,rgba(255,255,255,.7),transparent 60%);pointer-events:none}
+.hcard .hh{display:flex;align-items:center;gap:10px;font-family:'El Messiri';font-size:24px;color:var(--maroon);font-weight:700}
+.hcard .hh .ic{font-size:40px;animation:float 3s ease-in-out infinite}
+.hcard .hm{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.hcard .hm span{background:#fff;border:2px solid #ead29a;border-radius:16px;padding:6px 12px;font-weight:800;font-size:clamp(15px,1.8vw,20px)}
+.hbadges{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.hbadge{display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,#fff7df,#ffe9b0);border:2px solid var(--gold);border-radius:18px;padding:10px 16px;font-weight:800;color:var(--maroon2);animation:enter .5s}
+.hbadge .ic{font-size:30px}.hbadge small{display:block;color:var(--muted);font-weight:600}
+.iconpick{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.iconpick button{font-size:26px;background:#fff;border:2px solid #e7d6a6;border-radius:12px;padding:4px 8px}.iconpick button.on{border-color:var(--gold3);background:#fff3cd}
+/* المؤقت */
+.tmr{text-align:center}
+.tmr .ring{width:min(340px,70vw);aspect-ratio:1;margin:8px auto;position:relative}
+.tmr .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.tmr .ring .num{position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(48px,11vw,96px);font-weight:900;color:var(--maroon);font-variant-numeric:tabular-nums}
+.tmr .ring.end .num{color:var(--red);animation:bump .6s infinite}
+.tfloat{position:fixed;left:16px;bottom:96px;z-index:40;background:linear-gradient(180deg,var(--maroon3),var(--maroon2));color:#fff;border:3px solid var(--gold);border-radius:30px;padding:10px 18px;font-size:22px;font-weight:900;box-shadow:var(--shadow);font-variant-numeric:tabular-nums}
+.tfloat.end{background:var(--red);animation:bump .6s infinite}
 /* التميمة */
 .mascot{display:inline-block;animation:bob 2.6s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(0,0,0,.25))}
 @keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-8px) rotate(3deg)}}
@@ -284,19 +309,18 @@ function loading(){$app.innerHTML=`<div class="wrap"><div class="spinner"></div>
 /* =============== الرئيسية التفاعلية =============== */
 let siteVisits=null;
 const HOTS=[
-  {k:'start',l:38.4,t:81.8,w:22.8,h:14.2,pulse:1}
 ];
 function home(){
   stopPoll();
   $app.innerHTML=`<div class="wrap screen">
-    <div class="hero"><img src="${HERO}" alt="منصة أبطال المشارق"><div class="htitle"><b>منصة أبطال المشارق</b><i></i></div>${HOTS.map(h=>`<button class="hot ${h.pulse?'pulse':''}" data-k="${h.k}" aria-label="${h.k}" style="left:${h.l}%;top:${h.t}%;width:${h.w}%;height:${h.h}%"></button>`).join('')}</div>
-    <div class="card brand">${mascot(110)}<div><h1>منصة أبطال المشارق</h1><p>رحلة النجوم بين البيت والمدرسة ✨ كل إنجاز نجمة في رحلتك</p><p style="font-size:15px;opacity:.85">مدرسة المشارق للتعليم الأساسي — سلطنة عُمان</p></div></div>
+    <div class="hero" style="--hero:url('${HERO}')"><img src="${HERO}" alt="منصة أبطال المشارق"><i class="pfix" style="left:41.148%;top:60.180%;width:4.665%;height:16.216%;background-size:2143.59% 1045.56%;background-position:37.829% 39.248%"></i><i class="pfix" style="left:58.373%;top:46.486%;width:4.665%;height:16.216%;background-size:2143.59% 1045.56%;background-position:55.897% 30.317%"></i><i class="pfix" style="left:85.167%;top:63.063%;width:4.545%;height:15.856%;background-size:2200.00% 1069.32%;background-position:84.211% 42.204%"></i><i class="pfix" style="left:63.876%;top:72.613%;width:4.665%;height:16.216%;background-size:2143.59% 1045.56%;background-position:61.669% 47.356%"></i><div class="htitle"><b>منصة أبطال المشارق</b><i></i></div>${HOTS.map(h=>`<button class="hot ${h.pulse?'pulse':''}" data-k="${h.k}" aria-label="${h.k}" style="left:${h.l}%;top:${h.t}%;width:${h.w}%;height:${h.h}%"></button>`).join('')}</div>
+    <div class="card brand"><div class="logo" title="شعار مدرسة المشارق"></div><div class="grow"><h1>منصة أبطال المشارق</h1><p>رحلة النجوم بين البيت والمدرسة ✨ كل إنجاز نجمة في رحلتك</p><p style="font-size:15px;opacity:.85">مدرسة المشارق للتعليم الأساسي — معًا.. للتطوير والإجادة</p><span class="credit">✍️ إعداد: <b>أ. هند الحضرمي</b> — معلم أول لغة إنجليزية</span></div>${mascot(100)}</div>
     ${READY?'':'<div class="notice">⚠️ المنصة في وضع الإعداد — لم يتم ربط الخادم بعد.</div>'}
     <div class="tiles">
       <button class="tile" onclick="SFX.click();parentLogin()"><span class="ic">👨‍👩‍👧</span><b>دخول ولي الأمر</b><small>تابع نجوم ابنك عند كل معلمة</small></button>
       <button class="tile" onclick="SFX.click();teacherLogin()"><span class="ic" style="animation-delay:.5s">👩‍🏫</span><b>دخول المعلمة</b><small>برمزك الخاص تظهر صفوفك فقط</small></button>
     </div>
-    <div class="foot"><span class="pill">👀 عدد الزيارات: <b id="vis">${siteVisits??'...'}</b></span><div style="margin-top:10px">🇴🇲 رؤية عُمان 2040 — معًا نصنع جيلًا متميزًا</div></div>
+    <div class="foot"><span class="pill">👀 عدد الزيارات: <b id="vis">${siteVisits??'...'}</b></span><div style="margin-top:10px">🇴🇲 رؤية عُمان 2040 — معًا نصنع جيلًا متميزًا</div><div style="margin-top:6px">إعداد: أ. هند الحضرمي — معلم أول لغة إنجليزية</div></div>
   </div>`;
   $app.querySelectorAll('.hot').forEach(b=>b.onclick=()=>{SFX.whoosh();({start:startJourney,heritage:heritage,gov:governorates,chal:challenges})[b.dataset.k]()});
   if(siteVisits===null&&READY){let first=false;try{first=!sessionStorage.getItem('abt_v');sessionStorage.setItem('abt_v','1')}catch(e){}
@@ -366,6 +390,7 @@ function parentHome(first){
       <div class="starbox"><div class="n" id="pstars">${T0.pts}</div><div>⭐ عند ${esc(shortName(T0.name))}</div></div>
     </div>
     <div class="tchips">${v.teachers.map(t=>`<button class="tchip ${t.tid===pT?'on':''}" data-t="${t.tid}"><span class="e">${subjIcon(t.subjects)}</span><span>أ. ${esc(shortName(t.name))}<small>${esc(t.subjects)}</small></span><span class="s">${t.pts}⭐</span></button>`).join('')}</div>
+    ${(()=>{const hs=[];v.teachers.forEach(t=>(t.honor||[]).forEach(h=>hs.push({...h,t:shortName(t.name)})));return hs.length?`<div class="card gold" style="margin-bottom:18px"><h3 class="sec-title">🏆 ابنك في لوحة الشرف!</h3><div class="hbadges">${hs.map(h=>`<div class="hbadge"><span class="ic">${esc(h.icon)}</span><span>${esc(h.title)}<small>أ. ${esc(h.t)}</small></span></div>`).join('')}</div></div>`:''})()}
     <div class="card">
       <div class="row"><b style="font-size:19px;color:var(--maroon)">🎯 الطريق إلى الهدف مع أ. ${esc(shortName(T0.name))}</b><span class="grow"></span><span class="muted">باقي <b>${T0.goal-(T0.pts%T0.goal)}</b> نجمة للوصول إلى ${T0.goal}</span></div>
       <div class="bar" style="margin-top:10px"><i style="width:${pct}%"></i></div>
@@ -389,7 +414,7 @@ function parentHome(first){
         <button class="btn ghost sm" style="margin-top:14px" onclick="parentLogout()">🚪 تسجيل الخروج</button></div>
     </div>
     <div class="foot">🇴🇲 منصة أبطال المشارق — مدرسة المشارق للتعليم الأساسي</div></div>`;
-  if(first) setTimeout(()=>confetti(50),200);
+  if(first) setTimeout(()=>{confetti(50);if(v.teachers.some(t=>(t.honor||[]).length)){SFX.win();confetti(90)}},200);
   $app.querySelectorAll('.tchip').forEach(b=>b.onclick=()=>{SFX.whoosh();pT=b.dataset.t;parentHome()});
   $app.querySelectorAll('.day').forEach(b=>b.onclick=()=>{SFX.click();pSel=b.dataset.d;parentHome()});
   $app.querySelectorAll('.task:not(.locked)').forEach(b=>b.onclick=()=>toggleTask(b));
@@ -453,18 +478,19 @@ function op(name,args,local,silent){
 async function reloadT(){try{const r=await api('tOpen',{code:TC,classId:T.classId});T=r.view;renderT(true)}catch(e){}}
 function unread(){return (T.messages||[]).filter(m=>!m.read).length}
 function updateBadge(){const b=document.getElementById('mbadge');const n=unread();if(b){b.textContent=n;b.classList.toggle('hide',!n)}}
-const TABS=[['board','⭐','لوحة الصف'],['fun','🎁','المفاجآت'],['home','🏠','المهام المنزلية'],['msgs','💌','الرسائل'],['students','⚙️','الطلاب والإعدادات']];
+const TABS=[['board','⭐','لوحة الصف'],['honor','🏆','لوحة الشرف'],['fun','🎁','المفاجآت'],['home','🏠','المهام المنزلية'],['msgs','💌','الرسائل'],['students','⚙️','الطلاب والإعدادات']];
 function renderT(keep){
   const sy=window.scrollY;
   $app.innerHTML=`<div class="tbar"><div class="wrap">${mascot(54)}<div><h2>${String(T.classId).startsWith('G-')?'':'الصف '}${esc(T.className)}</h2><div class="sub">${subjIcon(T.subjects)} أ. ${esc(shortName(T.teacher))} · 🧒 ${T.data.students.length} طالب/ة</div></div>
       <span class="grow"></span>
+      <button class="ibtn" title="المؤقت" onclick="SFX.click();timerOpen()">⏱️</button>
       <button class="ibtn" title="الصوت" onclick="muted=!muted;store.set('abt_mute',muted);renderT(true)">${muted?'🔇':'🔊'}</button>
       <button class="ibtn" title="تحديث" onclick="SFX.click();reloadT();toast('تم التحديث 🔄')">🔄</button>
       <button class="ibtn" title="صفوفي" onclick="leaveClass()">🏫</button></div></div>
     <div class="wrap tmain ${keep?'':'screen'}" id="tbody"></div>
     <nav class="nav">${TABS.map(t=>`<button class="${tTab===t[0]?'on':''}" data-t="${t[0]}"><span class="e">${t[1]}</span>${t[2]}${t[0]==='msgs'?`<span class="badge ${unread()?'':'hide'}" id="mbadge">${unread()}</span>`:''}</button>`).join('')}</nav>`;
   $app.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{SFX.whoosh();tTab=b.dataset.t;renderT();window.scrollTo(0,0)});
-  ({board:tBoard,fun:tFun,home:tHome,msgs:tMsgs,students:tStudents})[tTab](document.getElementById('tbody'));
+  ({board:tBoard,honor:tHonor,fun:tFun,home:tHome,msgs:tMsgs,students:tStudents})[tTab](document.getElementById('tbody'));
   if(keep) window.scrollTo(0,sy);
 }
 function sortedStudents(){const s=T.data.students.slice();if(sortMode==='pts')s.sort((a,b)=>b.pts-a.pts);if(sortMode==='abc')s.sort((a,b)=>a.name.localeCompare(b.name,'ar'));return s}
@@ -566,6 +592,70 @@ function tMsgs(el){
     :'<div class="empty"><div class="big">📭</div>لا توجد رسائل بعد</div>'}</div>`;
   el.querySelectorAll('[data-rd]').forEach(b=>b.onclick=()=>{SFX.tick();op('msgRead',{id:b.dataset.rd},()=>{T.messages.find(m=>m.id===b.dataset.rd).read=true})});
   el.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>confirmBox('حذف هذه الرسالة نهائيًا؟',()=>op('msgDel',{id:b.dataset.dl},()=>{T.messages=T.messages.filter(m=>m.id!==b.dataset.dl)}),'حذف'));
+}
+/* ----- لوحة الشرف ----- */
+const HONOR_ICONS=['🏆','🥇','⭐','📚','✍️','🧠','🤝','🎨','🔢','🗣️','🌟','💡','🧹','⏰','❤️','🕌'];
+function tHonor(el){
+  const d=T.data,H=d.honor||[],nm=id=>{const s=d.students.find(x=>x.id===id);return s?s.name.split(' ').filter(w=>w!=='بن'&&w!=='بنت').slice(0,2).join(' '):''};
+  el.innerHTML=`<div class="card" style="margin-bottom:18px;background:linear-gradient(135deg,var(--maroon),var(--maroon2));color:#fff;border:3px solid var(--gold)">
+      <div class="row"><span style="font-size:54px">🏆</span><div class="grow"><h2 style="margin:0;color:var(--gold2)">لوحة الشرف</h2><div style="opacity:.9">أضيفي بنودًا مثل «نجم القراءة» أو «البطل المتعاون»، وأدرجي الطلاب فيها — يراها ولي الأمر فورًا 🌟</div></div>
+      <button class="btn gold" id="hadd">➕ بند جديد</button></div></div>
+    ${H.length?`<div class="honor-grid">${H.map(h=>`<div class="hcard"><div class="hh"><span class="ic">${esc(h.icon)}</span><span class="grow">${esc(h.title)}</span>
+      <button class="btn ghost sm" data-he="${h.id}">✏️</button><button class="btn ghost sm" data-hd="${h.id}">🗑️</button></div>
+      <div class="hm">${h.members.map(m=>`<span>⭐ ${esc(nm(m))}</span>`).join('')||'<span class="muted" style="border:0;background:none">لا أحد بعد — اضغطي ✏️ لإدراج الطلاب</span>'}</div></div>`).join('')}</div>`
+    :`<div class="card empty"><div class="big">🏆</div>لا توجد بنود بعد — ابدئي بإضافة أول بند</div>`}`;
+  el.querySelector('#hadd').onclick=()=>honorEdit(null);
+  el.querySelectorAll('[data-he]').forEach(b=>b.onclick=()=>honorEdit(H.find(h=>h.id===b.dataset.he)));
+  el.querySelectorAll('[data-hd]').forEach(b=>b.onclick=()=>{const h=H.find(x=>x.id===b.dataset.hd);
+    confirmBox(`حذف بند «${esc(h.title)}» من لوحة الشرف؟`,()=>{const nh=H.filter(x=>x.id!==h.id);op('setHonor',{honor:nh},x=>x.honor=nh)},'حذف')});
+}
+function honorEdit(h){
+  const d=T.data,isNew=!h;h=h?JSON.parse(JSON.stringify(h)):{id:'H'+Date.now().toString(36),title:'',icon:'🏆',members:[]};
+  modal(`<h3>${isNew?'➕ بند جديد':'✏️ تعديل البند'} في لوحة الشرف</h3>
+    <label class="field"><span>اسم البند</span><input class="inp" id="ht" value="${esc(h.title)}" placeholder="مثال: نجم القراءة، البطل المتعاون، صاحب الخط الجميل"></label>
+    <span style="font-weight:800;color:var(--maroon)">الأيقونة</span><div class="iconpick">${HONOR_ICONS.map(i=>`<button data-i="${i}" class="${i===h.icon?'on':''}">${i}</button>`).join('')}</div>
+    <span style="font-weight:800;color:var(--maroon)">الطلاب المدرجون</span>
+    <input class="inp" id="hq" placeholder="🔍 بحث" style="margin:6px 0;padding:8px 12px">
+    <div style="max-height:38vh;overflow:auto" id="hl">${d.students.map(s=>`<label class="sitem" data-n="${esc(s.name)}" style="cursor:pointer"><input type="checkbox" value="${s.id}" ${h.members.includes(s.id)?'checked':''} style="width:22px;height:22px"><span class="grow">${esc(s.name)}</span></label>`).join('')}</div>
+    <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn ghost sm" data-x>إلغاء</button><button class="btn sm" data-y>💾 حفظ</button></div>`,
+  (o,close)=>{
+    o.querySelectorAll('.iconpick button').forEach(b=>b.onclick=()=>{h.icon=b.dataset.i;o.querySelectorAll('.iconpick button').forEach(x=>x.classList.toggle('on',x===b));SFX.click()});
+    o.querySelector('#hq').oninput=e=>{const q=e.target.value.trim();o.querySelectorAll('#hl .sitem').forEach(r=>r.style.display=!q||r.dataset.n.includes(q)?'':'none')};
+    o.querySelector('[data-x]').onclick=close;
+    o.querySelector('[data-y]').onclick=()=>{h.title=o.querySelector('#ht').value.trim();if(!h.title){o.querySelector('#ht').focus();return}
+      h.members=[...o.querySelectorAll('#hl input:checked')].map(i=>i.value);
+      const nh=(d.honor||[]).filter(x=>x.id!==h.id);if(isNew)nh.push(h);else nh.splice((d.honor||[]).findIndex(x=>x.id===h.id),0,h);
+      close();SFX.win();confetti(80);op('setHonor',{honor:nh},x=>x.honor=nh);toast('تم تحديث لوحة الشرف 🏆')};
+  });
+}
+/* ----- المؤقت ----- */
+const TM={total:0,left:0,run:false,iv:null};
+function fmtT(s){s=Math.max(0,Math.ceil(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function timerTick(){if(!TM.run)return;TM.left-=1;if(TM.left<=5&&TM.left>0)tone(880,.12,'square',.08);
+  if(TM.left<=0){TM.left=0;TM.run=false;clearInterval(TM.iv);SFX.win();setTimeout(()=>SFX.win(),700);confetti(120);toast('⏰ انتهى الوقت!',4000)}timerPaint()}
+function timerPaint(){
+  const f=document.getElementById('tfloat'),pct=TM.total?TM.left/TM.total:0;
+  if(TM.total&&(TM.run||TM.left===0)&&!document.getElementById('tmrM')){if(!f){const b=document.createElement('button');b.id='tfloat';b.className='tfloat';b.onclick=timerOpen;document.body.appendChild(b)}}
+  const ff=document.getElementById('tfloat');if(ff){ff.textContent='⏱️ '+fmtT(TM.left);ff.classList.toggle('end',TM.left===0);if(!TM.total||document.getElementById('tmrM'))ff.remove()}
+  const n=document.getElementById('tnum');if(n){n.textContent=fmtT(TM.left);document.getElementById('tarc').style.strokeDashoffset=String(628*(1-pct));document.getElementById('tring').classList.toggle('end',TM.total>0&&TM.left===0);
+    const pb=document.getElementById('tplay');if(pb)pb.textContent=TM.run?'⏸️ إيقاف مؤقت':'▶️ ابدئي'}
+}
+function timerSet(sec){TM.total=sec;TM.left=sec;TM.run=false;clearInterval(TM.iv);timerPaint()}
+function timerOpen(){
+  modal(`<div class="tmr" id="tmrM"><h3>⏱️ مؤقت الحصة</h3>
+    <div class="row" style="justify-content:center">${[1,2,3,5,10,15].map(m=>`<button class="chip" data-m="${m}">${m} د</button>`).join('')}</div>
+    <div class="row" style="justify-content:center;margin-top:8px"><input class="inp" id="tmin" type="number" min="1" max="120" placeholder="دقائق" style="max-width:110px;padding:8px"><input class="inp" id="tsec" type="number" min="0" max="59" placeholder="ثوانٍ" style="max-width:110px;padding:8px"><button class="btn ghost sm" id="tcus">ضبط</button></div>
+    <div class="ring" id="tring"><svg viewBox="0 0 220 220"><circle cx="110" cy="110" r="100" fill="none" stroke="#efe3c4" stroke-width="16"/><circle id="tarc" cx="110" cy="110" r="100" fill="none" stroke="url(#tg)" stroke-width="16" stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="0" style="transition:stroke-dashoffset 1s linear"/><defs><linearGradient id="tg"><stop offset="0" stop-color="#2e9b55"/><stop offset="1" stop-color="#d6a54a"/></linearGradient></defs></svg><div class="num" id="tnum">00:00</div></div>
+    <div class="row" style="justify-content:center"><button class="btn green" id="tplay">▶️ ابدئي</button><button class="btn ghost" id="treset">🔄 إعادة</button></div>
+    <p class="muted" style="margin-bottom:0">يمكنك إغلاق النافذة وسيبقى المؤقت ظاهرًا أسفل الشاشة</p></div>`,
+  (o,close)=>{
+    const obs=new MutationObserver(()=>{if(!document.body.contains(o)){obs.disconnect();setTimeout(timerPaint,0)}});obs.observe(document.body,{childList:true});
+    o.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{SFX.click();timerSet(+b.dataset.m*60)});
+    o.querySelector('#tcus').onclick=()=>{const s=(+o.querySelector('#tmin').value||0)*60+(+o.querySelector('#tsec').value||0);if(s>0){SFX.click();timerSet(s)}};
+    o.querySelector('#tplay').onclick=()=>{if(!TM.total)return toast('اختاري المدة أولًا');if(TM.left<=0)TM.left=TM.total;TM.run=!TM.run;clearInterval(TM.iv);if(TM.run){SFX.tick();TM.iv=setInterval(timerTick,1000)}timerPaint()};
+    o.querySelector('#treset').onclick=()=>{SFX.whoosh();timerSet(TM.total)};
+    timerPaint();
+  });
 }
 function tGroup(el){
   const d=T.data;
