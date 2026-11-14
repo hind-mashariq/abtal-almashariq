@@ -105,6 +105,8 @@ input,textarea,select{font-family:inherit;font-size:18px}
 .cpick button span{font-size:38px}.cpick button small{color:var(--muted);font-size:14px}
 .cpick button:active{transform:scale(.95)}
 @media print{.tbar,.nav,.toolbar,.btn,select,#cadd{display:none!important}.card{box-shadow:none!important}}
+.netb{position:fixed;right:16px;bottom:96px;z-index:45;background:#fff8e1;color:#7a5200;border:2px solid var(--gold);border-radius:24px;padding:8px 16px;font-weight:800;font-size:15px;box-shadow:var(--shadow);cursor:pointer;max-width:calc(100vw - 32px)}
+.netb.off{background:#5b6168;color:#fff;border-color:#8a9097}
 /* المؤقت */
 .tmr{text-align:center}
 .tmr .ring{width:min(340px,70vw);aspect-ratio:1;margin:8px auto;position:relative}
@@ -312,11 +314,59 @@ const barColors=['#d6a54a','#1d7a3e','#0f5c3c','#1d6fa5','#6b4ba1','#c8102e','#e
 function barFor(i,pct){const c=barColors[i%barColors.length];return `<div class="bar"><i style="width:${Math.min(100,pct)}%;background:linear-gradient(90deg,${c},${c}cc)"></i></div>`}
 
 const READY=API&&API.indexOf('http')===0;
+/* ===== العمل بدون إنترنت: نسخة محفوظة على الجهاز + طابور إرسال تلقائي ===== */
+const ckey=(a,p)=>'abt_c_'+a+'_'+(p.code||'')+(a==='tOpen'?'_'+p.classId:'');
+function offErr(){return Object.assign(new Error('لا يوجد اتصال بالإنترنت'),{offline:true})}
+let NET=navigator.onLine!==false;
+function setNet(v){if(NET===v)return;NET=v;syncBadge()}
 async function api(action,payload={}){
   if(!READY) throw new Error('لم يتم ربط التطبيق بالخادم بعد');
-  const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action},payload))});
-  const j=await r.json(); if(!j.ok) throw new Error(j.err||'حدث خطأ'); return j;
+  let j;
+  try{
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),20000);
+    const r=await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({action},payload)),signal:ctl.signal});
+    clearTimeout(tm);j=await r.json();setNet(true);
+  }catch(e){
+    setNet(false);
+    if(action==='tLogin'||action==='tOpen'){const c=store.get(ckey(action,payload));if(c){c.fromCache=true;return c}}
+    if(action==='tLogin') throw Object.assign(new Error('لا يوجد اتصال بالإنترنت — الدخول أول مرة على هذا الجهاز يحتاج إنترنت، بعدها يعمل التطبيق بدونه'),{offline:true});
+    if(action==='tOpen') throw Object.assign(new Error('هذا الصف لم يُحفظ على جهازك بعد — افتحيه مرة واحدة مع الإنترنت'),{offline:true});
+    throw offErr();
+  }
+  if(!j.ok) throw new Error(j.err||'حدث خطأ');
+  if(action==='tLogin') store.set(ckey('tLogin',payload),j);
+  if(j.view&&j.view.classId&&payload.code) store.set(ckey('tOpen',{code:payload.code,classId:j.view.classId}),{ok:true,view:j.view});
+  return j;
 }
+let Q=store.get('abt_q')||[],flushing=false,hadOffline=false;
+const saveQ=()=>store.set('abt_q',Q);
+function saveView(){if(T&&TC)store.set(ckey('tOpen',{code:TC,classId:T.classId}),{ok:true,view:T})}
+function syncBadge(){let b=document.getElementById('netb');
+  const n=Q.length;if(NET&&!n){if(b)b.remove();return}
+  if(!b){b=document.createElement('div');b.id='netb';b.className='netb';document.body.appendChild(b);b.onclick=()=>{flushQ();toast(NET?'🔄 جارٍ الإرسال…':'📴 لا يوجد اتصال الآن — سيُرسل كل شيء تلقائيًا عند عودة الإنترنت',3500)}}
+  b.classList.toggle('off',!NET);
+  b.textContent=NET?(flushing?'🔄 جارٍ إرسال '+n+' تعديل…':'⏳ '+n+' تعديل بانتظار الإرسال'):'📴 بدون اتصال'+(n?' — '+n+' تعديل محفوظ على جهازك':' — التطبيق يعمل ويحفظ على جهازك');
+}
+async function flushQ(){
+  if(flushing||!Q.length)return;flushing=true;syncBadge();let sent=0;
+  while(Q.length){const it=Q[0];
+    try{const r=await api('tOp',{code:it.code,classId:it.classId,op:it.op,a:it.a});
+      Q.shift();saveQ();sent++;
+      if(!Q.length&&r.view&&T&&T.classId===it.classId){T=r.view;saveView();if(!document.querySelector('.overlay'))renderT(true)}
+    }catch(x){
+      if(x.offline){hadOffline=true;break}
+      Q.shift();saveQ();toast('⚠️ '+x.message);
+    }
+    syncBadge();
+  }
+  flushing=false;syncBadge();
+  if(!Q.length&&sent&&hadOffline){hadOffline=false;toast('✅ عاد الاتصال — تم إرسال كل تعديلاتك ('+sent+')',3500)}
+}
+window.addEventListener('online',()=>{setNet(true);flushQ()});
+window.addEventListener('offline',()=>setNet(false));
+setInterval(()=>{if(Q.length)flushQ()},15000);
+async function prefetchClasses(r){if(!r||r.fromCache||!r.classes)return;
+  for(const c of r.classes.slice(0,30)){try{await api('tOpen',{code:TC,classId:c.id})}catch(e){if(e.offline)break}}}
 function loading(){$app.innerHTML=`<div class="wrap"><div class="spinner"></div><p class="center muted">لحظات...</p></div>`}
 
 /* =============== الرئيسية التفاعلية =============== */
@@ -383,7 +433,7 @@ function challenges(){
 }
 
 /* =============== المعلمة =============== */
-let TC=null,ME=null,T=null,tTab='board',pending=0,pollTimer=null,sortMode=store.get('abt_sort')||'list';
+let TC=null,ME=null,T=null,tTab='board',pollTimer=null,sortMode=store.get('abt_sort')||'list';
 function teacherLogin(err){
   $app.innerHTML=`<div class="wrap screen"><div class="card gold login">
     <button class="back" onclick="home()">→ الرئيسية</button>
@@ -391,11 +441,11 @@ function teacherLogin(err){
     <form id="tf"><label class="field"><span>🔑 رمز المعلمة</span><input class="inp" id="tc" inputmode="numeric" type="password" autocomplete="off" placeholder="•••••" required></label>
       <button class="btn wide" type="submit">دخول 👩‍🏫</button>${err?`<div class="err">${esc(err)}</div>`:''}</form></div></div>`;
   document.getElementById('tf').onsubmit=async e=>{e.preventDefault();const code=tc.value.trim();
-    try{loading();const r=await api('tLogin',{code});TC=code;store.set('abt_tcode',code);classesScreen(r)}catch(x){SFX.err();teacherLogin(x.message)}};
+    try{loading();const r=await api('tLogin',{code});TC=code;store.set('abt_tcode',code);classesScreen(r);prefetchClasses(r)}catch(x){SFX.err();teacherLogin(x.message)}};
 }
 async function classesScreen(r){
   stopPoll();
-  if(!r){loading();try{r=await api('tLogin',{code:TC})}catch(x){store.del('abt_tcode');return teacherLogin(x.message)}}
+  if(!r){loading();try{r=await api('tLogin',{code:TC});if(!r.fromCache)prefetchClasses(r)}catch(x){if(!x.offline)store.del('abt_tcode');return teacherLogin(x.message)}}
   ME=r.teacher;
   $app.innerHTML=`<div class="wrap screen">
     <div class="card phead">${mascot(90)}<div><div class="sub">أهلًا بكِ</div><h2>أ. ${esc(ME.name)}</h2><div class="sub">${subjIcon(ME.subjects)} ${esc(ME.subjects||'')}</div></div>
@@ -433,19 +483,20 @@ async function mgrPanel(){
   });
 }
 function enterClass(view){T=view;if(!TABS.some(t=>t[0]===tTab))tTab='board';store.set('abt_class',T.classId);tTab='board';renderT();startPoll()}
-function teacherLogout(){stopPoll();store.del('abt_tcode');store.del('abt_class');TC=null;T=null;home()}
+function teacherLogout(){if(Q.length&&!confirmLeave())return;stopPoll();store.del('abt_tcode');store.del('abt_class');TC=null;T=null;home()}
+function confirmLeave(){toast('⏳ لديكِ تعديلات لم تُرسل بعد — ستُرسل تلقائيًا عند عودة الإنترنت، لا تسجّلي الخروج الآن',4500);flushQ();return false}
 function leaveClass(){stopPoll();store.del('abt_class');T=null;classesScreen()}
-function startPoll(){stopPoll();pollTimer=setInterval(async()=>{if(!T||pending)return;
-  try{const r=await api('tOpen',{code:TC,classId:T.classId});if(pending)return;T=r.view;const a=document.activeElement;
+function startPoll(){stopPoll();pollTimer=setInterval(async()=>{if(!T)return;if(Q.length){flushQ();return}
+  try{const r=await api('tOpen',{code:TC,classId:T.classId});if(Q.length||r.fromCache)return;T=r.view;const a=document.activeElement;
     if(document.querySelector('.overlay')||(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))){updateBadge();return}renderT(true)}catch(e){}},25000)}
 function stopPoll(){if(pollTimer)clearInterval(pollTimer);pollTimer=null}
 function op(name,args,local,silent){
   if(local){local(T.data);if(!silent)renderT(true)}
-  pending++;
-  return api('tOp',{code:TC,classId:T.classId,op:name,a:args}).then(r=>{pending--;if(r.view&&!pending){T=r.view;if(!silent||!local)renderT(true)}return r})
-    .catch(x=>{pending--;toast('⚠️ '+x.message);reloadT()});
+  Q.push({code:TC,classId:T.classId,op:name,a:args,t:Date.now()});saveQ();saveView();syncBadge();
+  return flushQ();
 }
-async function reloadT(){try{const r=await api('tOpen',{code:TC,classId:T.classId});T=r.view;renderT(true)}catch(e){}}
+async function reloadT(){if(Q.length){await flushQ();if(Q.length)return}
+  try{const r=await api('tOpen',{code:TC,classId:T.classId});if(Q.length)return;T=r.view;renderT(true)}catch(e){if(e.offline)toast('📴 لا يوجد اتصال — تعرضين آخر نسخة محفوظة على جهازك')}}
 function unread(){return (T.messages||[]).filter(m=>!m.read).length}
 function updateBadge(){const b=document.getElementById('mbadge');const n=unread();if(b){b.textContent=n;b.classList.toggle('hide',!n)}}
 const TABS=[['board','⭐','لوحة الصف'],['eval','📊','بنود التقييم'],['honor','🏆','لوحة الشرف'],['fun','🎁','المفاجآت'],['students','⚙️','الطلاب والإعدادات']];
@@ -723,9 +774,10 @@ function tStudents(el){
   const tc=store.get('abt_tcode'),cid=store.get('abt_class');store.del('abt_parent');
   if(READY&&tc){TC=tc;
     if(cid){loading();try{const r=await api('tOpen',{code:tc,classId:cid});enterClass(r.view);return}catch(e){store.del('abt_class')}}
+    syncBadge();if(Q.length)flushQ();
     return classesScreen();
   }
-  home();
+  home();syncBadge();if(Q.length)flushQ();
   if(isStandalone()){const b=document.getElementById('instBtn');if(b)b.remove()}
   if(/[?&]install/.test(location.search))setTimeout(installApp,600);
 })();
