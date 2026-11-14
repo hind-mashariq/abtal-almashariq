@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-<title>منصة أبطال المشارق | رحلة في عُمان</title>
+<title>منصة أبطال المشارق</title>
 <meta name="description" content="منصة أبطال المشارق للتعزيز بين البيت والمدرسة — مدرسة المشارق للتعليم الأساسي">
 <meta name="theme-color" content="#0f5c3c">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⭐</text></svg>">
@@ -49,6 +49,9 @@ input,textarea,select{font-family:inherit;font-size:18px}
 /* الرئيسية التفاعلية */
 .hero{border-radius:28px;overflow:hidden;box-shadow:var(--shadow);border:4px solid var(--gold);background:#fff;position:relative;line-height:0}
 .hero img{display:block;width:100%;height:auto;aspect-ratio:1672/690;object-fit:cover;object-position:top}
+.htitle{position:absolute;left:44%;top:8%;width:55%;height:38%;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;background:radial-gradient(ellipse closest-side,rgba(244,243,240,1) 76%,rgba(244,243,240,.9) 88%,rgba(244,243,240,0) 100%)}
+.htitle b{font-family:'El Messiri','Tajawal',sans-serif;font-weight:700;color:#0a4a30;font-size:clamp(20px,4.6vw,58px);line-height:1.15;text-shadow:0 2px 0 rgba(255,255,255,.6)}
+.htitle i{display:block;width:60%;height:4px;margin-top:6px;border-radius:4px;background:linear-gradient(90deg,transparent,#d6a54a,transparent)}
 .hot{position:absolute;border-radius:22px;background:transparent;cursor:pointer;transition:background .2s, box-shadow .2s}
 .hot:hover{background:rgba(255,255,255,.18);box-shadow:0 0 0 4px rgba(214,165,74,.8)}
 .hot.pulse{animation:hotp 2s infinite}
@@ -286,7 +289,7 @@ const HOTS=[
 function home(){
   stopPoll();
   $app.innerHTML=`<div class="wrap screen">
-    <div class="hero"><img src="${HERO}" alt="رحلة في عُمان">${HOTS.map(h=>`<button class="hot ${h.pulse?'pulse':''}" data-k="${h.k}" aria-label="${h.k}" style="left:${h.l}%;top:${h.t}%;width:${h.w}%;height:${h.h}%"></button>`).join('')}</div>
+    <div class="hero"><img src="${HERO}" alt="منصة أبطال المشارق"><div class="htitle"><b>منصة أبطال المشارق</b><i></i></div>${HOTS.map(h=>`<button class="hot ${h.pulse?'pulse':''}" data-k="${h.k}" aria-label="${h.k}" style="left:${h.l}%;top:${h.t}%;width:${h.w}%;height:${h.h}%"></button>`).join('')}</div>
     <div class="card brand">${mascot(110)}<div><h1>منصة أبطال المشارق</h1><p>رحلة النجوم بين البيت والمدرسة ✨ كل إنجاز نجمة في رحلتك</p><p style="font-size:15px;opacity:.85">مدرسة المشارق للتعليم الأساسي — سلطنة عُمان</p></div></div>
     ${READY?'':'<div class="notice">⚠️ المنصة في وضع الإعداد — لم يتم ربط الخادم بعد.</div>'}
     <div class="tiles">
@@ -453,7 +456,7 @@ function updateBadge(){const b=document.getElementById('mbadge');const n=unread(
 const TABS=[['board','⭐','لوحة الصف'],['fun','🎁','المفاجآت'],['home','🏠','المهام المنزلية'],['msgs','💌','الرسائل'],['students','⚙️','الطلاب والإعدادات']];
 function renderT(keep){
   const sy=window.scrollY;
-  $app.innerHTML=`<div class="tbar"><div class="wrap">${mascot(54)}<div><h2>الصف ${esc(T.className)}</h2><div class="sub">${subjIcon(T.subjects)} أ. ${esc(shortName(T.teacher))} · 🧒 ${T.data.students.length} طالب/ة</div></div>
+  $app.innerHTML=`<div class="tbar"><div class="wrap">${mascot(54)}<div><h2>${String(T.classId).startsWith('G-')?'':'الصف '}${esc(T.className)}</h2><div class="sub">${subjIcon(T.subjects)} أ. ${esc(shortName(T.teacher))} · 🧒 ${T.data.students.length} طالب/ة</div></div>
       <span class="grow"></span>
       <button class="ibtn" title="الصوت" onclick="muted=!muted;store.set('abt_mute',muted);renderT(true)">${muted?'🔇':'🔊'}</button>
       <button class="ibtn" title="تحديث" onclick="SFX.click();reloadT();toast('تم التحديث 🔄')">🔄</button>
@@ -472,9 +475,9 @@ function tBoard(el){
       <span class="grow"></span><button class="btn green sm" id="allp">+1 ⭐ للجميع</button></div>
     ${st.length?`<div class="board">${st.map((s,i)=>{const rk=sortMode==='pts'&&s.pts>0&&i<3?['g1','g2','g3'][i]:'';
       return `<div class="srow" data-sid="${s.id}" data-n="${esc(s.name)}"><div class="rk ${rk}">${rk?['🥇','🥈','🥉'][i]:i+1}</div>
-        <div><div class="nm">${esc(s.name)}</div>${barFor(i,s.pts/max*100)}</div>
+        <div><div class="nm">${esc(s.name)}${s.cls?` <small class="pill" style="font-size:13px;padding:2px 10px;vertical-align:middle">${esc(s.cls)}</small>`:''}</div>${barFor(i,s.pts/max*100)}</div>
         <div class="ctrl"><button class="pm m" data-d="-1">−</button><div class="cnt" id="c_${s.id}">${s.pts} ⭐</div><button class="pm p" data-d="1">+</button></div></div>`}).join('')}</div>`
-    :`<div class="card empty"><div class="big">🧒</div>لا يوجد طلاب في هذا الصف</div>`}`;
+    :`<div class="card empty"><div class="big">🧒</div>لا يوجد طلاب بعد${String(T.classId).startsWith('G-')?`<br><button class="btn" style="margin-top:14px" onclick="tTab='students';renderT()">🔎 أضيفي طلابك من أي صف</button>`:''}</div>`}`;
   const sm=el.querySelector('#sm');sm.value=sortMode;sm.onchange=()=>{sortMode=sm.value;store.set('abt_sort',sortMode);renderT(true)};
   el.querySelector('#q').oninput=e=>{const q=e.target.value.trim();el.querySelectorAll('.srow').forEach(r=>r.style.display=!q||r.dataset.n.includes(q)?'':'none')};
   el.querySelector('#allp').onclick=()=>{SFX.win();confetti(60);op('adjMany',{sids:T.data.students.map(s=>s.id),d:1},d=>d.students.forEach(s=>s.pts++))};
@@ -564,7 +567,33 @@ function tMsgs(el){
   el.querySelectorAll('[data-rd]').forEach(b=>b.onclick=()=>{SFX.tick();op('msgRead',{id:b.dataset.rd},()=>{T.messages.find(m=>m.id===b.dataset.rd).read=true})});
   el.querySelectorAll('[data-dl]').forEach(b=>b.onclick=()=>confirmBox('حذف هذه الرسالة نهائيًا؟',()=>op('msgDel',{id:b.dataset.dl},()=>{T.messages=T.messages.filter(m=>m.id!==b.dataset.dl)}),'حذف'));
 }
+function tGroup(el){
+  const d=T.data;
+  el.innerHTML=`<div class="card gold"><h3 class="sec-title">🔎 أضيفي طالبًا من أي صف</h3>
+      <p class="muted" style="margin-top:-6px">اكتبي جزءًا من اسم الطالب، ثم اضغطي «إضافة». يظهر الطالب في لوحتك، ويرى ولي أمره نجومه عندك.</p>
+      <input class="inp" id="gq" placeholder="مثال: محمد سالم">
+      <div id="gres" style="margin-top:10px"></div></div>
+    <div class="card" style="margin-top:18px"><h3 class="sec-title">🧒 طلابي (${d.students.length})</h3>
+      ${d.students.length?d.students.map(s=>`<div class="sitem"><span class="grow">${esc(s.name)} <small class="muted">— ${esc(s.cls)}</small></span><button class="btn ghost sm" data-gr="${s.id}">🗑️ إزالة</button></div>`).join(''):'<div class="empty">لم تُضيفي طلابًا بعد</div>'}</div>
+    <div class="card" style="margin-top:18px"><h3 class="sec-title">⚙️ إعدادات لوحتي</h3>
+      <label class="field"><span>🎯 هدف النجوم</span><input class="inp" id="st_g" type="number" min="5" max="500" value="${d.goal}"></label>
+      <button class="btn green sm" id="sv">💾 حفظ</button>
+      <button class="btn sm" id="rst" style="margin-inline-start:8px">🔄 تصفير نجومي لشهر جديد</button></div>`;
+  let timer=null;const gq=el.querySelector('#gq'),gres=el.querySelector('#gres');
+  gq.oninput=()=>{clearTimeout(timer);const q=gq.value.trim();if(q.length<2){gres.innerHTML='';return}
+    timer=setTimeout(async()=>{gres.innerHTML='<div class="spinner" style="width:28px;height:28px;margin:10px auto"></div>';
+      try{const r=await api('tSearch',{code:TC,q});const have=new Set(d.students.map(s=>s.id));
+        gres.innerHTML=r.results.length?r.results.map(x=>`<div class="sitem"><span class="grow">${esc(x.name)} <small class="muted">— ${esc(x.className)}</small></span>${have.has(x.cid+':'+x.sid)?'<span class="pill">✓ مضاف</span>':`<button class="btn green sm" data-ga="${esc(x.cid)}|${esc(x.sid)}">➕ إضافة</button>`}</div>`).join(''):'<p class="muted">لا نتائج</p>';
+        gres.querySelectorAll('[data-ga]').forEach(b=>b.onclick=()=>{const [cid,sid]=b.dataset.ga.split('|');SFX.plus();b.outerHTML='<span class="pill">✓ مضاف</span>';
+          op('addMember',{cid,sid}).then(()=>toast('تمت الإضافة ✅'))});
+      }catch(x){gres.innerHTML=`<div class="err">${esc(x.message)}</div>`}},400)};
+  el.querySelectorAll('[data-gr]').forEach(b=>b.onclick=()=>{const s=d.students.find(x=>x.id===b.dataset.gr);
+    confirmBox(`إزالة <b>${esc(s.name)}</b> من طلابك؟ ستُحذف نجومه في لوحتك.`,()=>op('removeMember',{key:s.id},x=>{x.students=x.students.filter(y=>y.id!==s.id)}),'إزالة')});
+  el.querySelector('#sv').onclick=()=>{SFX.win();op('setGoal',{goal:+el.querySelector('#st_g').value},x=>x.goal=+el.querySelector('#st_g').value);toast('تم الحفظ ✅')};
+  el.querySelector('#rst').onclick=()=>confirmBox('سيتم تصفير نجوم لوحتك. هل أنتِ متأكدة؟',()=>{SFX.whoosh();op('resetPts',{},x=>{x.students.forEach(s=>s.pts=0);x.teams.forEach(t=>t.pts=0)})},'نعم، صفّري');
+}
 function tStudents(el){
+  if(String(T.classId).startsWith('G-')) return tGroup(el);
   const d=T.data,link=location.href.split('#')[0].split('?')[0];
   const share=`السلام عليكم ورحمة الله 🌟\nيسعدنا انضمامكم إلى «منصة أبطال المشارق» لمتابعة نجوم أبنائكم عند كل معلمة وتسجيل إنجازاتهم في البيت.\n\n🔗 الرابط: ${link}\n🔑 رمز ولي الأمر: ${PARENT_CODE}\n🧒 ثم اكتبوا اسم الطالب الثلاثي\n\nالصف ${T.className} — أ. ${T.teacher}`;
   el.innerHTML=`<div class="card" style="margin-bottom:18px"><h3 class="sec-title">📈 إحصائيات</h3><div class="row">
