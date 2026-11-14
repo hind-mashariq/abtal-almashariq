@@ -48,7 +48,7 @@ input,textarea,select{font-family:inherit;font-size:18px}
 
 /* الرئيسية التفاعلية */
 .hero{border-radius:28px;overflow:hidden;box-shadow:var(--shadow);border:4px solid var(--gold);background:#fff;position:relative;line-height:0}
-.hero img{display:block;width:100%;height:auto}
+.hero img{display:block;width:100%;height:auto;aspect-ratio:1672/690;object-fit:cover;object-position:top}
 .hot{position:absolute;border-radius:22px;background:transparent;cursor:pointer;transition:background .2s, box-shadow .2s}
 .hot:hover{background:rgba(255,255,255,.18);box-shadow:0 0 0 4px rgba(214,165,74,.8)}
 .hot.pulse{animation:hotp 2s infinite}
@@ -281,10 +281,7 @@ function loading(){$app.innerHTML=`<div class="wrap"><div class="spinner"></div>
 /* =============== الرئيسية التفاعلية =============== */
 let siteVisits=null;
 const HOTS=[
-  {k:'start',l:38.4,t:60,w:22.8,h:10.4,pulse:1},
-  {k:'heritage',l:66.4,t:75.4,w:29.6,h:18.6},
-  {k:'gov',l:35.1,t:75.4,w:29.5,h:18.6},
-  {k:'chal',l:3.9,t:75.4,w:29.5,h:18.6}
+  {k:'start',l:38.4,t:81.8,w:22.8,h:14.2,pulse:1}
 ];
 function home(){
   stopPoll();
